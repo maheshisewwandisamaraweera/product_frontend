@@ -1,27 +1,21 @@
 'use client';
-import { useQuery } from '@tanstack/react-query';
-import api from '../../utils/api';
+import { useQuery } from 'react-query';
+import api from '../../../utils/api';
 import Link from 'next/link';
 
-// Define a TypeScript interface for the expected product data
 interface Product {
   id: number;
   name: string;
   price: number;
-  description?: string;
 }
 
-// Fetch products with explicit return type
 const fetchProducts = async (): Promise<Product[]> => {
   const res = await api.get('/products');
-  return res.data;
+  return res.data as Product[];
 };
 
 export default function Products() {
-  const { data, isLoading, error } = useQuery<Product[]>({
-    queryKey: ['products'], // Corrected the queryKey format
-    queryFn: fetchProducts,
-  });
+  const { data, isLoading, error } = useQuery<Product[]>('products', fetchProducts);
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading products</p>;
@@ -33,7 +27,7 @@ export default function Products() {
         <button className="bg-green-500 text-white p-2 rounded">Add Product</button>
       </Link>
       <ul className="mt-4">
-        {data?.map((product) => (  // Optional chaining ensures safety
+        {data?.map((product) => (
           <li key={product.id} className="border p-2 mb-2">
             <Link href={`/products/${product.id}`}>
               <h2 className="text-xl">{product.name}</h2>

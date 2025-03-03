@@ -1,7 +1,7 @@
 'use client';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import api from '../../utils/api';
+import api from '../../../../utils/api';
 import { useState } from 'react';
 
 interface LoginFormInputs {
@@ -16,7 +16,9 @@ export default function Login() {
 
   const onSubmit = async (data: LoginFormInputs) => {
     try {
-      const res = await api.post('/auth/login', data);
+      console.log(data);
+      const res = await api.post<{ token: string }>('/auth/login', data);
+      console.log(res.data.token);
       localStorage.setItem('token', res.data.token);
       router.push('/products');
     } catch (err: any) {
